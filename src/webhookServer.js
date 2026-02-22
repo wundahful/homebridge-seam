@@ -421,25 +421,6 @@ class WebhookServer {
     this.webhookId = null;
   }
 
-  /**
-   * Manually delete webhook from Seam (if needed)
-   */
-  async deleteWebhook() {
-    if (this.webhookId) {
-      try {
-        await this.platform.seamAPI.deleteWebhook(this.webhookId);
-        this.debugLog(`Webhook ${this.webhookId} deleted from Seam`);
-        this.webhookId = null;
-        return true;
-      } catch (error) {
-        this.platform.log.error('Failed to delete webhook:', error.message);
-        return false;
-      }
-    } else {
-      this.platform.log.warn('No webhook ID available to delete');
-      return false;
-    }
-  }
 }
 
 module.exports = WebhookServer;
