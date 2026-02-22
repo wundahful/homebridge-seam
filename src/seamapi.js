@@ -105,19 +105,6 @@ class SeamAPI {
   }
 
   /**
-   * List all devices
-   */
-  async listDevices() {
-    try {
-      const response = await this._request('POST', '/devices/list', {});
-      return response.devices || [];
-    } catch (error) {
-      this.log.error('Failed to list devices:', error.message);
-      throw error;
-    }
-  }
-
-  /**
    * Lock the device
    */
   async lockDoor(deviceId) {
