@@ -318,14 +318,9 @@ class LockAccessory {
   async getLockCurrentState() {
     this.debugLog(`HomeKit requested lock current state for ${this.name}`);
     
-    // Add timeout to prevent hanging
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Request timeout')), 5000);
-    });
-    
     try {
-      const statusPromise = this.platform.seamAPI.getLockStatus(this.deviceId);
-      const status = await Promise.race([statusPromise, timeoutPromise]);
+      // SeamAPI._request() already enforces a 5-second timeout
+      const status = await this.platform.seamAPI.getLockStatus(this.deviceId);
       
       const oldLocked = this.isLocked;
       this.isLocked = status.locked;
