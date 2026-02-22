@@ -29,13 +29,6 @@ class WebhookServer {
   }
 
   /**
-   * Generate webhook secret
-   */
-  generateSecret() {
-    return crypto.randomBytes(32).toString('hex');
-  }
-
-  /**
    * Generate random webhook path
    */
   generatePath() {
