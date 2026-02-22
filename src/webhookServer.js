@@ -350,36 +350,19 @@ class WebhookServer {
    */
   async registerWebhook() {
     try {
-      // Check if webhook already exists for this URL
-      const existingWebhooks = await this.platform.seamAPI.listWebhooks();
-      const existingWebhook = existingWebhooks.find(wh => wh.url === this.webhookUrl);
-      
-      if (existingWebhook) {
-        this.webhookId = existingWebhook.webhook_id;
-        this.debugLog(`Using existing webhook: ${this.webhookId}`);
-        this.debugLog(`Webhook URL: ${this.webhookUrl}`);
-        this.debugLog(`Webhook secret: ${this.secret.substring(0, 8)}...`);
-        return;
-      }
-
-      // Clean up any other webhooks first
+      // Clean up any old webhooks for this base URL first
       await this.cleanupWebhook();
 
-      // Determine supported events based on device capabilities
       const eventTypes = this.getSupportedWebhookEvents();
-      
       this.debugLog(`Registering webhook with events: ${eventTypes.join(', ')}`);
-      
+
       const webhook = await this.platform.seamAPI.createWebhook(this.webhookUrl, eventTypes);
 
       this.webhookId = webhook.webhook_id;
-      // Use the Svix-generated secret returned by Seam (whsec_... format)
-      this.secret = webhook.secret;
+      this.secret = webhook.secret; // Svix-generated whsec_... secret
       this.platform.log.info(`Webhook registered with Seam: ${this.webhookId}`);
       this.debugLog(`Webhook URL: ${this.webhookUrl}`);
-      this.debugLog(`Webhook secret obtained from Seam API`);
 
-      // Save the new configuration
       this.platform.saveWebhookConfig(this.path, this.secret);
     } catch (error) {
       this.platform.log.error('Failed to register webhook:', error.message);
