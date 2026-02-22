@@ -629,54 +629,6 @@ class LockAccessory {
   }
 
   /**
-   * Update HomeKit characteristics with current device info
-   */
-  updateHomeKitCharacteristics() {
-    if (!this.informationService) {
-      this.platform.log.warn(`Information service not available for ${this.name}`);
-      return;
-    }
-
-    try {
-      this.debugLog('Updating HomeKit characteristics:', {
-        manufacturer: this.deviceInfo.manufacturer,
-        model: this.deviceInfo.model,
-        serialNumber: this.deviceInfo.serialNumber,
-        firmware: this.deviceInfo.firmwareVersion
-      });
-      
-      this.informationService
-        .getCharacteristic(this.Characteristic.Manufacturer)
-        .updateValue(this.deviceInfo.manufacturer);
-      
-      this.informationService
-        .getCharacteristic(this.Characteristic.Model)
-        .updateValue(this.deviceInfo.model);
-      
-      this.informationService
-        .getCharacteristic(this.Characteristic.SerialNumber)
-        .updateValue(this.deviceInfo.serialNumber);
-      
-      this.informationService
-        .getCharacteristic(this.Characteristic.FirmwareRevision)
-        .updateValue(this.deviceInfo.firmwareVersion);
-      
-      this.debugLog(`HomeKit characteristics updated: ${this.deviceInfo.manufacturer} ${this.deviceInfo.model} (${this.deviceInfo.serialNumber})`);
-    } catch (error) {
-      this.platform.log.error(`Failed to update HomeKit characteristics:`, error.message);
-    }
-  }
-
-  /**
-   * Force refresh device info
-   */
-  async refreshDeviceInfo() {
-    this.debugLog(`Refreshing device info for ${this.name}...`);
-    await this.updateDeviceInfo();
-    this.updateHomeKitCharacteristics();
-  }
-
-  /**
    * Get UUID for this accessory
    */
   getUUID() {
