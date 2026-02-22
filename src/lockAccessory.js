@@ -330,17 +330,10 @@ class LockAccessory {
         this.platform.log.info(`${this.name} lock state changed via API: ${oldLocked ? 'LOCKED' : 'UNLOCKED'} → ${this.isLocked ? 'LOCKED' : 'UNLOCKED'}`);
       }
       
-      // Update battery level if available (always update when we have fresh data)
-      if (typeof status.battery_level === 'number') {
-        this.batteryLevel = status.battery_level;
-        this.isLowBattery = this.batteryLevel < 20;
-        this.updateBatteryCache(this.batteryLevel, this.isLowBattery);
-      } else {
-        // Use cached battery data
-        const batteryData = await this.getBatteryLevelFromAPI();
-        this.batteryLevel = batteryData.level;
-        this.isLowBattery = batteryData.isLow;
-      }
+      // getLockStatus() always returns battery_level; fall back to cache only as a safety net
+      this.batteryLevel = status.battery_level ?? this.batteryCache.level;
+      this.isLowBattery = this.batteryLevel < 20;
+      this.updateBatteryCache(this.batteryLevel, this.isLowBattery);
       
       const state = this.isLocked 
         ? this.Characteristic.LockCurrentState.SECURED 
