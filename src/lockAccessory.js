@@ -340,12 +340,8 @@ class LockAccessory {
         : this.Characteristic.LockCurrentState.UNSECURED;
       
       this.debugLog(`Lock current state for ${this.name}: ${this.isLocked ? 'LOCKED' : 'UNLOCKED'} (state value: ${state})`);
-      
-      // Force update characteristics to ensure HomeKit gets the value
-      this.lockService
-        .getCharacteristic(this.Characteristic.LockCurrentState)
-        .updateValue(state);
-      
+
+      // Keep LockTargetState in sync with current state
       this.lockService
         .getCharacteristic(this.Characteristic.LockTargetState)
         .updateValue(state);
@@ -369,12 +365,7 @@ class LockAccessory {
         ? this.Characteristic.LockCurrentState.SECURED 
         : this.Characteristic.LockCurrentState.UNSECURED;
       this.debugLog(`Returning cached state for ${this.name}: ${this.isLocked ? 'LOCKED' : 'UNLOCKED'} (state value: ${state})`);
-      
-      // Force update characteristics even on error
-      this.lockService
-        .getCharacteristic(this.Characteristic.LockCurrentState)
-        .updateValue(state);
-      
+
       this.lockService
         .getCharacteristic(this.Characteristic.LockTargetState)
         .updateValue(state);
