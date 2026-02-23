@@ -241,15 +241,6 @@ class WebhookServer {
       return;
     }
 
-    // Check if this event is newer than the last processed event
-    if (accessory.lastEventTime && eventTime <= accessory.lastEventTime) {
-      this.debugLog(`Webhook event ${eventType} for ${deviceId} is older than last processed event (${new Date(accessory.lastEventTime).toISOString()}), skipping`);
-      return;
-    }
-
-    // Update last event time
-    accessory.lastEventTime = eventTime;
-
     // Update accessory state based on event type
     switch (eventType) {
       case 'lock.locked':
